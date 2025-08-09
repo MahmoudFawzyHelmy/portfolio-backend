@@ -26,6 +26,7 @@ cloudinary.config({
 app.use(
   cors({
     origin: [
+      '*',
       process.env.PORTFOLIO_URL, 
       process.env.DASHBOARD_URL,
       "http://localhost:5173",
