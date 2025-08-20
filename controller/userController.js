@@ -81,7 +81,7 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   }
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
-    return next(new ErrorHandler("Invalid Email Or Password!", 404));
+    return next(new ErrorHandler("Invalid Email Or Password!", 401));
   }
   const isPasswordMatched = await user.comparePassword(password);
   if (!isPasswordMatched) {
@@ -96,6 +96,8 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
     .cookie("token", "", {
       httpOnly: true,
       expires: new Date(Date.now()),
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
     })
     .json({
       success: true,

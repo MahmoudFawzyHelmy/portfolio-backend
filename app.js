@@ -23,10 +23,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Trust proxy for secure cookies behind Vercel/Proxies
+app.set("trust proxy", 1);
+
+// CORS configuration: allow credentials and specific frontend origin
+const allowedOrigin = process.env.FRONTEND_URL;
 app.use(
   cors({
-    origin: '*',
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
