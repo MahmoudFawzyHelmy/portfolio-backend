@@ -29,6 +29,7 @@ app.set("trust proxy", 1);
 // CORS configuration: allow credentials and specific frontend origin
 const allowedOriginsRaw = [
   process.env.FRONTEND_URL,
+  "https://portfolio-front-jet.vercel.app",
   "https://porftolio-dashboard.vercel.app",
   "https://portfolio-dashboard.vercel.app",
   "http://localhost:3000",
