@@ -27,18 +27,26 @@ cloudinary.config({
 app.set("trust proxy", 1);
 
 // CORS configuration: allow credentials and specific frontend origin
-const allowedOrigins = [
+const allowedOriginsRaw = [
   process.env.FRONTEND_URL,
+  "https://porftolio-dashboard.vercel.app",
+  "https://portfolio-dashboard.vercel.app",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-];
+].filter(Boolean);
+
+const normalizeOrigin = (url) => (typeof url === "string" ? url.replace(/\/$/, "").toLowerCase() : url);
+const allowedOrigins = allowedOriginsRaw.map(normalizeOrigin);
 
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Not allowed by CORS"));
+    const normalizedOrigin = normalizeOrigin(origin);
+    const isAllowed = allowedOrigins.some((allowed) => normalizedOrigin === allowed);
+    if (isAllowed) return callback(null, true);
+    // Do not throw; respond without CORS headers for disallowed origins
+    return callback(null, false);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
